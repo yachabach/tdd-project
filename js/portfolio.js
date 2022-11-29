@@ -6,12 +6,18 @@ const Portfolio = () => {
 
     let moneys = [];
 
+    const exchangeRates = new Map();
+    exchangeRates.set("EUR->USD", 1.2);
+    exchangeRates.set("USD->KRW", 1100);
+
+
     const convert = (money, currency) => {
-        const eurToUsd = 1.2;
+        const exchangeKey = currencyOf(money) + '->' + currency;
+
         if (currencyOf(money) === currency) {
             return amountOf(money)
         }
-        return amountOf(money) * eurToUsd
+        return amountOf(money) * exchangeRates.get(exchangeKey)
     }
 
     const add = (...newMoneys)  => {

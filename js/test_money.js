@@ -7,12 +7,17 @@ const { multiply, divide, create } = Money();
 
 const MoneyTest = () => {
 
+    let expectedValue
+
+    const oneDollar = create(1, "USD");
     let fiveDollars = create(5, "USD");
     let tenDollars = create(10, "USD");
     let fifteenDollars = create(15, "USD");
 
     let tenEuros = create(10, "EUR");
     let twentyEuros = create(20, "EUR");
+
+    const elevenHundredWon = create(1100, "KRW");
 
     const testMultiplication = () => {
         assert.deepStrictEqual(multiply(tenEuros)(2), twentyEuros);
@@ -39,11 +44,20 @@ const MoneyTest = () => {
         assert.deepStrictEqual(tadPortfolio.evaluate("USD"), tadExpectedValue)
     }
 
+    const testAdditionOfDollarsAndWons = () => {
+        const dollarWonPortfolio = Portfolio();
+        dollarWonPortfolio.add(oneDollar, elevenHundredWon)
+        expectedValue = create(2200, "KRW")
+
+        assert.deepStrictEqual(dollarWonPortfolio.evaluate("KRW"), expectedValue)
+    }
+
     return Object.freeze({ 
                         testAddition, 
                         testDivision, 
                         testMultiplication,
-                        testAdditionOfDollarsAndEuros
+                        testAdditionOfDollarsAndEuros,
+                        testAdditionOfDollarsAndWons
                     })
 
 }
