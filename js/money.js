@@ -21,10 +21,10 @@ const Money = () => {
         }
     }
 
-    const valueOf = (obj) => {return obj.amount;}
+    const amountOf = (obj) => {return obj.amount;}
+    const currencyOf = (obj) => {return obj.currency;}
 
-    return Object.freeze({multiply, divide, create, valueOf});
-    // return Object.freeze({amount, currency});
+    return Object.freeze({multiply, divide, create, amountOf, currencyOf});
 }
 
 module.exports = Money;

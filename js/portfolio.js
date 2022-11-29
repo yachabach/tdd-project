@@ -1,10 +1,18 @@
 const Money = require('./money');
 
-const {create, valueOf} = Money();
+const {create, amountOf, currencyOf} = Money();
 
 const Portfolio = () => {
 
     let moneys = [];
+
+    const convert = (money, currency) => {
+        const eurToUsd = 1.2;
+        if (currencyOf(money) === currency) {
+            return amountOf(money)
+        }
+        return amountOf(money) * eurToUsd
+    }
 
     const add = (...newMoneys)  => {
         moneys = moneys.concat(newMoneys)
@@ -12,7 +20,7 @@ const Portfolio = () => {
 
     const evaluate = (currency) => {
         let total = moneys.reduce( (sum, money) => {
-            return sum + valueOf(money);
+            return sum + convert(money, currency);
         }, 0);
         return create(total, currency)
     }
@@ -20,4 +28,4 @@ const Portfolio = () => {
     return { add, evaluate }
 }
 
-module.exports = Portfolio;
+module.exports = Portfolio; 
