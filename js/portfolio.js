@@ -25,11 +25,21 @@ const Portfolio = () => {
     }
 
     const evaluate = (currency) => {
+        let failures = [];
         let total = moneys.reduce( (sum, money) => {
-            return sum + convert(money, currency);
+            const convertedAmount = convert(money, currency)
+            console.log('Converting to', currency, ' - converted amount = ', convertedAmount)
+            if (!convertedAmount) {
+                failures.push(currencyOf(money) + '->' + currency);
+                return sum;
+            }
+            return sum + convertedAmount;
         }, 0);
-        return create(total, currency)
-    }
+        if (!failures.length) {
+            return create(total, currency)
+        }
+        throw new Error('Missing exchange rate(s):[' + failures.join() + ']', )
+        }
 
     return { add, evaluate }
 }
