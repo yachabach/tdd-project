@@ -6,26 +6,32 @@ const Bank = require('./bank');
 
 const { multiply, divide, create } = Money();
 
+const oneDollar = create(1, "USD");
+const fiveDollars = create(5, "USD");
+const tenDollars = create(10, "USD");
+const fifteenDollars = create(15, "USD");
+
+const oneEuro = create(1, "EUR")
+const tenEuros = create(10, "EUR");
+const twentyEuros = create(20, "EUR");
+
+const oneWon = create(1, "KRW")
+const elevenHundredWon = create(1100, "KRW");
+
+let yakBank;
+let expectedValue;
+let expectedError;
+
+
+
 const MoneyTest = () => {
 
-    let expectedValue;
-    let expectedError;
+    const setup = () => {
 
-    const yakBank = Bank();
-    yakBank.addExchageRate("EUR", "USD", 1.2)
-    yakBank.addExchageRate("USD", "KRW", 1100)
-
-    const oneDollar = create(1, "USD");
-    const fiveDollars = create(5, "USD");
-    const tenDollars = create(10, "USD");
-    const fifteenDollars = create(15, "USD");
-
-    const oneEuro = create(1, "EUR")
-    const tenEuros = create(10, "EUR");
-    const twentyEuros = create(20, "EUR");
-
-    const oneWon = create(1, "KRW")
-    const elevenHundredWon = create(1100, "KRW");
+        yakBank = Bank();
+        yakBank.addExchageRate("EUR", "USD", 1.2)
+        yakBank.addExchageRate("USD", "KRW", 1100)
+    }
 
     const testMultiplication = () => {
         assert.deepStrictEqual(multiply(tenEuros)(2), twentyEuros);
@@ -68,9 +74,12 @@ const MoneyTest = () => {
     const testConversion = () => {
         const convertedUSD = yakBank.convert(fiveDollars, "USD")
         assert.deepStrictEqual(convertedUSD, fiveDollars)
+        yakBank.addExchageRate("EUR", "USD", 1.3)
+        assert.deepStrictEqual(create(1.3, "USD"), yakBank.convert(oneEuro, "USD")) 
     }
 
     return Object.freeze({ 
+                        setup,
                         testAddition, 
                         testDivision, 
                         testMultiplication,
