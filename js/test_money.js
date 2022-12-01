@@ -1,7 +1,8 @@
 const assert = require('assert');
 const Money = require('./money');
 const Portfolio = require('./portfolio');
-const runAllTests = require('./Utilities/runAllTests')
+const runAllTests = require('./Utilities/runAllTests');
+const Bank = require('./bank');
 
 const { multiply, divide, create } = Money();
 
@@ -9,6 +10,10 @@ const MoneyTest = () => {
 
     let expectedValue;
     let expectedError;
+
+    const yakBank = Bank();
+    yakBank.addExchageRate("EUR", "USD", 1.2)
+    yakBank.addExchageRate("USD", "KRW", 1100)
 
     const oneDollar = create(1, "USD");
     const fiveDollars = create(5, "USD");
@@ -36,28 +41,33 @@ const MoneyTest = () => {
     const testAddition = () => {
         const taPortfolio = Portfolio();
         taPortfolio.add(fiveDollars, tenDollars);
-        assert.deepEqual(taPortfolio.evaluate("USD"), fifteenDollars);        
+        assert.deepEqual(taPortfolio.evaluate(yakBank, "USD"), fifteenDollars);        
     }
 
     const testAdditionOfDollarsAndEuros = () => {
         const tadPortfolio = Portfolio();
         tadPortfolio.add(fiveDollars, tenEuros);
         const tadExpectedValue = create(17, "USD")
-        assert.deepStrictEqual(tadPortfolio.evaluate("USD"), tadExpectedValue)
+        assert.deepStrictEqual(tadPortfolio.evaluate(yakBank, "USD"), tadExpectedValue)
     }
 
     const testAdditionOfDollarsAndWons = () => {
         const dollarWonPortfolio = Portfolio();
         dollarWonPortfolio.add(oneDollar, elevenHundredWon)
         expectedValue = create(2200, "KRW")
-        assert.deepStrictEqual(dollarWonPortfolio.evaluate("KRW"), expectedValue)
+        assert.deepStrictEqual(dollarWonPortfolio.evaluate(yakBank, "KRW"), expectedValue)
     }
 
     const testAdditionWithMissingExchangeRates = () => {
         missingRatePortfolio = Portfolio();
         missingRatePortfolio.add(oneDollar, oneEuro, oneWon)
         expectedError = new Error('Missing exchange rate(s):[USD->Kalganid,EUR->Kalganid,KRW->Kalganid]')
-        assert.throws(() => {missingRatePortfolio.evaluate("Kalganid")}, expectedError)
+        assert.throws(() => {missingRatePortfolio.evaluate(yakBank, "Kalganid")}, expectedError)
+    }
+
+    const testConversion = () => {
+        const convertedUSD = yakBank.convert(fiveDollars, "USD")
+        assert.deepStrictEqual(convertedUSD, fiveDollars)
     }
 
     return Object.freeze({ 
@@ -66,7 +76,8 @@ const MoneyTest = () => {
                         testMultiplication,
                         testAdditionOfDollarsAndEuros,
                         testAdditionOfDollarsAndWons,
-                        testAdditionWithMissingExchangeRates
+                        testAdditionWithMissingExchangeRates,
+                        testConversion
                     })
 
 }
