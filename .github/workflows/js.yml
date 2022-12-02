@@ -15,10 +15,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-
     - name: Check out code
       uses: actions/checkout@3
-
     - name: Test
       run: node js/test_money.js
       shell: bash
