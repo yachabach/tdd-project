@@ -17,7 +17,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
       name: Check out code
-      uses: actions/chackout@2
+      uses: actions/checkout@2
 
       name: Test
       run: node js/test_money.js
